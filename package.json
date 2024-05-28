@@ -1,10 +1,10 @@
 {
-  "name": "@borodutch/smart-contract-starter",
+  "name": "castles-contract",
   "version": "0.0.1",
-  "description": "A starter for Solidity smart contracts for Ethereum",
+  "description": "Contract for Castles",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Borodutch/smart-contract-starter"
+    "url": "git+https://github.com/backmeupplz/castles-contract"
   },
   "license": "MIT",
   "np": {

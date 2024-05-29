@@ -50,6 +50,9 @@ contract Castles is Ownable, ReentrancyGuard {
     CastleName castle
   );
   event Withdrawn(uint256 roundId, address indexed defender, uint256 amount);
+  event RoundStarted(uint256 roundId, uint256 startBlock, uint256 endBlock);
+  event RoundDurationSet(uint256 duration);
+  event MaxFeeSet(uint256 fee);
 
   // Constructor
 
@@ -61,10 +64,12 @@ contract Castles is Ownable, ReentrancyGuard {
 
   function setRoundDuration(uint256 duration) public onlyOwner {
     roundDuration = duration;
+    emit RoundDurationSet(duration);
   }
 
   function setMaxFee(uint256 fee) public onlyOwner {
     maxFee = fee;
+    emit MaxFeeSet(fee);
   }
 
   // Getters
@@ -198,5 +203,10 @@ contract Castles is Ownable, ReentrancyGuard {
     currentRoundId++;
     rounds[currentRoundId].startBlock = block.number;
     rounds[currentRoundId].endBlock = block.number + roundDuration;
+    emit RoundStarted(
+      currentRoundId,
+      block.number,
+      block.number + roundDuration
+    );
   }
 }

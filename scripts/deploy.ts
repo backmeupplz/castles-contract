@@ -31,11 +31,10 @@ async function main() {
   const [deployer] = await ethers.getSigners()
   await printSignerInfo(deployer)
   // Deploy contract
-  const contractName = 'MyERC721'
-  const contractSymbol = 'MYERC721'
+  const contractName = 'Castles'
   console.log(`Deploying ${contractName}...`)
   const Contract = await ethers.getContractFactory(contractName)
-  const contract = await Contract.deploy(contractName, contractSymbol, deployer)
+  const contract = await Contract.deploy(deployer)
   const deploymentTransaction = contract.deploymentTransaction()
   if (!deploymentTransaction) {
     throw new Error('Deployment transaction is null')
@@ -52,7 +51,7 @@ async function main() {
   try {
     await run('verify:verify', {
       address,
-      constructorArguments: [contractName, contractSymbol, deployer.address],
+      constructorArguments: [deployer.address],
     })
   } catch (err) {
     console.log(

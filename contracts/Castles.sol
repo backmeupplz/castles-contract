@@ -38,8 +38,8 @@ contract Castles is Ownable, ReentrancyGuard {
 
   mapping(uint256 => Round) rounds;
   uint256 public currentRoundId;
-  uint256 public roundDuration = 6500; // Roughly 24 hours assuming 15 seconds per block
-  uint256 public maxFee = 20; // Maximum fee percentage
+  uint256 public roundDuration = 6500;
+  uint256 public maxFee = 20;
 
   // Events
 
@@ -47,7 +47,8 @@ contract Castles is Ownable, ReentrancyGuard {
     uint256 roundId,
     address indexed defender,
     uint256 amount,
-    CastleName castle
+    CastleName castle,
+    address indexed ref
   );
   event Withdrawn(uint256 roundId, address indexed defender, uint256 amount);
   event RoundStarted(uint256 roundId, uint256 startBlock, uint256 endBlock);
@@ -119,7 +120,10 @@ contract Castles is Ownable, ReentrancyGuard {
 
   // Functions
 
-  function defend(CastleName castleName) public payable nonReentrant {
+  function defend(
+    CastleName castleName,
+    address ref
+  ) public payable nonReentrant {
     if (block.number >= rounds[currentRoundId].endBlock) {
       startNewRound();
     }
@@ -130,7 +134,13 @@ contract Castles is Ownable, ReentrancyGuard {
     uint256 feeAmount = (amount * feePercentage) / 100;
     uint256 netAmount = amount - feeAmount;
 
-    payable(owner()).transfer(feeAmount);
+    if (ref != address(0)) {
+      uint256 halfFee = feeAmount / 2;
+      payable(ref).transfer(halfFee);
+      payable(owner()).transfer(halfFee);
+    } else {
+      payable(owner()).transfer(feeAmount);
+    }
 
     Castle storage castle = castleName == CastleName.North
       ? rounds[currentRoundId].northCastle
@@ -139,7 +149,7 @@ contract Castles is Ownable, ReentrancyGuard {
     castle.balance += netAmount;
     castle.contributions[msg.sender] += netAmount;
 
-    emit Defended(currentRoundId, msg.sender, amount, castleName);
+    emit Defended(currentRoundId, msg.sender, amount, castleName, ref);
   }
 
   function withdraw(

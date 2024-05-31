@@ -188,8 +188,10 @@ contract Castles is Ownable, ReentrancyGuard {
       );
 
       // Improve precision by scaling up before dividing
-      uint256 scaledProportion = (winningAmount * 1e18) / winningCastle.balance;
-      uint256 totalAmount = (scaledProportion * losingCastle.balance) / 1e18;
+      uint256 totalAmount = (((winningAmount * 1e18) / winningCastle.balance) *
+        losingCastle.balance) /
+        1e18 +
+        winningAmount;
 
       winningCastle.contributions[msg.sender] = 0;
 

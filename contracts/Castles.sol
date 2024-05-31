@@ -38,8 +38,8 @@ contract Castles is Ownable, ReentrancyGuard {
 
   mapping(uint256 => Round) rounds;
   uint256 public currentRoundId;
-  uint256 public roundDuration = 6500;
-  uint256 public maxFee = 20;
+  uint256 public roundDuration = 43200;
+  uint256 public maxFee = 10;
 
   // Events
 
